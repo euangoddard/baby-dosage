@@ -1,0 +1,106 @@
+<h1>Setup</h1>
+<div class="row">
+  <div class="small-12 columns">
+    <label>
+      Baby's name
+      <input
+        type="text"
+        class="form-control"
+        placeholder="Baby's name"
+        id="name"
+        ng-model="baby_name"
+        required
+      >
+    </label>
+  </div>
+</div>
+<div class="row">
+  <div class="small-12 columns">
+    <h2>Medicines</h2>
+    <div class="panel callout" ng-if="!medicines.length">
+      <h4>No medicines yet!</h4>
+      <p>To add your first medicine, fill out the form below.</p>
+    </div>
+  </div>
+</div>
+<article class="row" ng-repeat="medicine in medicines">
+  <div class="small-12 columns clearfix">
+    <button
+      class="tiny button alert right"
+      type="button"
+      ng-click="delete_medicine(medicine.id)"
+    >Delete</button>
+    <h3>{{ medicine.name }}</h3>
+    <p>
+      To be taken <strong>{{ medicine.frequency }} times per day</strong> with
+      an interval of <strong>{{ medicine.interval }} hours</strong>.
+    </p>
+    <hr>
+  </div>
+</article>
+<form name="new_medicine_form" ng-submit="add_medicine()">
+  <div class="row">
+    <div class="small-12 columns">
+      <label>
+        Name of medicine
+        <input
+          type="text"
+          ng-model="new_medicine.name"
+          placeholder="Enter a memorable name"
+          required
+        >
+      </label>
+    </div>
+  </div>
+  <div class="row">
+    <div class="small-6 columns">
+      <div class="row collapse">
+        <label for="new-medicine-frequency">How often to take</label>
+        <div class="small-6 columns">
+          <input
+            type="number"
+            ng-model="new_medicine.frequency"
+            min="1"
+            max="8"
+            id="new-medicine-frequency"
+            placeholder="Doses"
+            required
+          >
+        </div>
+        <div class="small-6 columns">
+          <span class="postfix radius">per day</span>
+        </div>
+      </div>
+    </div>
+    <div class="small-6 columns">
+      <div class="row collapse">
+        <label for="new-medicine-interval">How long between doses</label>
+        <div class="small-6 columns">
+          <input
+            type="number"
+            ng-model="new_medicine.interval"
+            min="1"
+            max="24"
+            id="new-medicine-interval"
+            placeholder="Interval"
+            required
+          >
+        </div>
+        <div class="small-6 columns">
+          <span class="postfix radius">hours</span>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="row">
+    <div class="small-12 columns clearfix">
+      <button
+        type="submit"
+        ng-disabled="new_medicine_form.$invalid"
+        class="button right"
+      >
+        Add medicine
+      </button>
+    </div>
+  </div>
+</form>

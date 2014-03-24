@@ -1,0 +1,88 @@
+<h1>Recent medicine taken by {{ baby_name }}</h1>
+<div class="panel callout" ng-if="!doses.length">
+  <h4>{{ baby_name }} hasn't taken any medicine recently</h4>
+  <p>When {{ baby_name }} next has a dose, add a dose below.</p>
+</div>
+<div class="row">
+  <div class="small-6 columns">
+    <div class="panel" ng-repeat="metric in metrics">
+      <h4>{{ metric.medicine.name }}</h4>
+      <p ng-if="metric.is_next_dose_ok">
+        <span class="label success">OK to take {{ metric.medicine.name }}</span>
+        You can give a dose of {{ metric.medicine.name }} to {{ baby_name }}.
+      </p>
+      <p ng-if="!metric.is_next_dose_ok">
+        <span class="label alert">Can't take {{ metric.medicine.name }}</span>
+        <span ng-if="!metric.is_enough_time_elapsed">
+          The last dose was too recent &mdash; you must leave
+          {{ metric.medicine.interval }} hours between doses.
+        </span>
+        <span ng-if="!metric.is_frequency_allowance_ok">
+          You have already given {{ baby_name }} the maximum allowed doses
+          ({{ metric.medicine.frequency }}) in the past 24 hours.
+        </span>
+      </p>
+    </div>
+  </div>
+  <div class="small-6 columns">
+    <ol>
+      <li ng-repeat="dose in doses">
+        <span class="label rounded">{{ dose.medicine|find_medicine:medicines }}</span>
+        <span am-time-ago="dose.when"></span>
+        <button
+          class="label alert"
+          type="button"
+          ng-click="delete_dose($index)"
+        >&times;</button>
+      </li>
+    </ol>
+  </div>
+</div>
+
+<form name="new_dose_form" ng-submit="add_dose()">
+  <h2>Add taken medicine</h2>
+  <div class="row">
+    <div class="small-6 column">
+      <label>
+        Medicine
+        <select ng-model="new_dose.medicine" required>
+          <option ng-repeat="medicine in medicines" ng-value="medicine.id">
+            {{ medicine.name }}
+          </option>
+        </select>
+      </label>
+    </div>
+    <div class="small-6 column">
+      <div class="row collapse">
+        <label for="new-dose-when">When</label>
+        <div class="small-6 columns">
+          <input
+            type="time"
+            ng-model="new_dose.when"
+            id="new-dose-when"
+            placeholder="Time of dose"
+            required
+          >
+        </div>
+        <div class="small-6 columns">
+          <button
+            class="postfix button"
+            type="button"
+            ng-click="set_new_dose_time_to_now()">just now
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="row">
+    <div class="small-12 row clearfix">
+      <button
+        type="submit"
+        ng-disabled="new_dose_form.$invalid"
+        class="button right"
+      >
+        Add dose
+      </button>
+    </div>
+  </div>
+</form>
