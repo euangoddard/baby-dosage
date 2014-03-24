@@ -4,7 +4,7 @@
   <p>When {{ baby_name }} next has a dose, add a dose below.</p>
 </div>
 <div class="row">
-  <div class="small-6 columns">
+  <div class="small-12 medium-6 columns">
     <div class="panel" ng-repeat="metric in metrics">
       <h4>{{ metric.medicine.name }}</h4>
       <p ng-if="metric.is_next_dose_ok">
@@ -24,7 +24,7 @@
       </p>
     </div>
   </div>
-  <div class="small-6 columns">
+  <div class="small-12 medium-6 columns">
     <ol>
       <li ng-repeat="dose in doses">
         <span class="label rounded">{{ dose.medicine|find_medicine:medicines }}</span>
@@ -42,7 +42,7 @@
 <form name="new_dose_form" ng-submit="add_dose()">
   <h2>Add taken medicine</h2>
   <div class="row">
-    <div class="small-6 column">
+    <div class="small-12 medium-6 column">
       <label>
         Medicine
         <select ng-model="new_dose.medicine" required>
@@ -52,7 +52,7 @@
         </select>
       </label>
     </div>
-    <div class="small-6 column">
+    <div class="small-12 medium-6 column">
       <div class="row collapse">
         <label for="new-dose-when">When</label>
         <div class="small-6 columns">
@@ -75,7 +75,7 @@
     </div>
   </div>
   <div class="row">
-    <div class="small-12 row clearfix">
+    <div class="small-12 columns clearfix">
       <button
         type="submit"
         ng-disabled="new_dose_form.$invalid"
