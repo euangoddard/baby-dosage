@@ -1,10 +1,7 @@
-<h1>Recent medicine taken by {{ baby_name }}</h1>
-<div class="panel callout" ng-if="!doses.length">
-  <h4>{{ baby_name }} hasn't taken any medicine recently</h4>
-  <p>When {{ baby_name }} next has a dose, add a dose below.</p>
-</div>
+<h1>Medicine taken by {{ baby_name }}</h1>
+
 <div class="row">
-  <div class="small-12 medium-6 columns">
+  <div class="small-12 medium-7 large-8 columns">
     <div class="panel" ng-repeat="metric in metrics">
       <h4>{{ metric.medicine.name }}</h4>
       <p ng-if="metric.is_next_dose_ok">
@@ -24,8 +21,12 @@
       </p>
     </div>
   </div>
-  <div class="small-12 medium-6 columns">
-    <ol>
+  <div class="small-12 medium-5 large-4 columns">
+    <div class="panel callout" ng-if="!doses.length">
+      <h4>{{ baby_name }} hasn't taken any medicine recently</h4>
+      <p>When {{ baby_name }} next has a dose, add a dose below.</p>
+    </div>
+    <ul class="no-bullet" ng-if="doses.length">
       <li ng-repeat="dose in doses">
         <span class="label rounded">{{ dose.medicine|find_medicine:medicines }}</span>
         <span am-time-ago="dose.when"></span>
@@ -37,6 +38,7 @@
       </li>
     </ol>
   </div>
+  <hr>
 </div>
 
 <form name="new_dose_form" ng-submit="add_dose()">
