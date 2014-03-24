@@ -1,7 +1,7 @@
 <h1>Setup</h1>
 <div class="row">
-  <div class="small-12 columns">
-    <label>
+  <div class="small-12 columns" ng-class="{}">
+    <label ng-class="{error: !baby_name}">
       Baby's name
       <input
         type="text"
@@ -12,6 +12,7 @@
         required
       >
     </label>
+    <small class="error" ng-if="!baby_name">Please enter your baby's name</small>
   </div>
 </div>
 <div class="row">
