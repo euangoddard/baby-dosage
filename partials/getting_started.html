@@ -1,0 +1,36 @@
+<h1>Getting started</h1>
+<div class="row">
+  <div class="small-12 large-4 columns">
+    <div class="panel tall">
+      <h2>1. <small>Set your baby's name</small></h2>
+      <label ng-class="{error: !baby_name}">
+      Baby's name
+      <input
+        type="text"
+        class="form-control"
+        placeholder="Baby's name"
+        id="name"
+        ng-model="baby_name"
+        required
+      >
+    </label>
+    <small class="error" ng-if="!baby_name">Please enter your baby's name</small>
+    </div>
+  </div>
+  <div class="small-12 large-4 columns">
+    <div class="panel tall">
+      <h2>2. <small>Enter the medicines your baby takes</small></h2>
+      <a href="#/medicines" class="button expand">Enter medicines</a>
+    </div>
+  </div>
+  <div class="small-12 large-4 columns">
+    <div class="panel tall">
+      <h2>3. <small>Enter doses of the medicines your baby has taken</small></h2>
+      <a href="#/doses" class="button expand">Enter doses</a>
+    </div>
+  </div>
+</div>
+<hr>
+<p>
+  Please make sure you have read the <a href="#/terms">terms &amp; conditions</a>
+</p>

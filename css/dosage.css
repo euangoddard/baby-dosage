@@ -1,3 +1,8 @@
 body {
     padding-top: 50px;
 }
+@media only screen and (min-width:64.063em) {
+    .tall {
+        min-height: 220px;
+    }
+}

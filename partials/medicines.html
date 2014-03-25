@@ -1,23 +1,6 @@
-<h1>Setup</h1>
-<div class="row">
-  <div class="small-12 columns" ng-class="{}">
-    <label ng-class="{error: !baby_name}">
-      Baby's name
-      <input
-        type="text"
-        class="form-control"
-        placeholder="Baby's name"
-        id="name"
-        ng-model="baby_name"
-        required
-      >
-    </label>
-    <small class="error" ng-if="!baby_name">Please enter your baby's name</small>
-  </div>
-</div>
 <div class="row">
   <div class="small-12 columns">
-    <h2>Medicines</h2>
+    <h1>Medicines</h1>
     <div class="panel callout" ng-if="!medicines.length">
       <h4>No medicines yet!</h4>
       <p>To add your first medicine, fill out the form below.</p>

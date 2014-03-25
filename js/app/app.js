@@ -7,13 +7,17 @@
     );
     
     dosage.config(function ($routeProvider) {
-        $routeProvider.when('/setup', {
-            controller: 'SetupController',
-            templateUrl: 'partials/setup.html'
-        });
         $routeProvider.when('/', {
-            controller: 'DoseController',
-            templateUrl: 'partials/dose.html'
+            controller: 'GettingStartedController',
+            templateUrl: 'partials/getting_started.html'
+        });
+        $routeProvider.when('/medicines', {
+            controller: 'MedicinesController',
+            templateUrl: 'partials/medicines.html'
+        });
+        $routeProvider.when('/doses', {
+            controller: 'DosesController',
+            templateUrl: 'partials/doses.html'
         });
         $routeProvider.when('/terms', {
             controller: 'TermsController',

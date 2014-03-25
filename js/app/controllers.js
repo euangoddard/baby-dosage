@@ -3,11 +3,11 @@
     
     var controllers = angular.module('dosage.controllers', ['dosage.storage']);
     
-    controllers.controller('DoseController', function ($scope, $location, localstorage) {
+    controllers.controller('DosesController', function ($scope, $location, localstorage) {
         var baby_name = localstorage.get('baby-name');
         var medicines = localstorage.get('medicines') || [];
         if (!(baby_name && medicines.length)) {
-            $location.path('/setup');
+            $location.path('/');
             return;
         }
         
@@ -213,16 +213,15 @@
         };
     };
     
-    controllers.controller('SetupController', function ($scope, localstorage) {
+    controllers.controller('MedicinesController', function ($scope, $location, localstorage) {
+        var baby_name = localstorage.get('baby-name');
+        if (!baby_name) {
+            $location.path('/');
+            return;
+        }
+        $scope.baby_name = baby_name;
+        
         var creation_counter = localstorage.get('creation-counter') || 0;
-        
-        $scope.baby_name = localstorage.get('baby-name');
-        $scope.$watch('baby_name', function (new_name, old_name) {
-            if (new_name !== old_name) {
-                localstorage.put('baby-name', new_name);
-            }
-        });
-        
         $scope.medicines = localstorage.get('medicines') || [];
         
         // Addition of new medicines
@@ -254,6 +253,17 @@
     controllers.controller('TermsController', function ($scope) {
         
     });
+    
+    controllers.controller('GettingStartedController', function ($scope, localstorage) {
+        $scope.baby_name = localstorage.get('baby-name');
+        $scope.$watch('baby_name', function (new_name, old_name) {
+            if (new_name !== old_name) {
+                localstorage.put('baby-name', new_name);
+            }
+        });
+    });
+    
+    
     
     controllers.controller('MenuController', function ($scope) {
         $scope.is_menu_open = false;
