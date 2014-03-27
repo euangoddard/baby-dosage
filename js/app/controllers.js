@@ -1,25 +1,25 @@
 (function (angular) {
     'use strict';
-    
+
     var controllers = angular.module('dosage.controllers', ['dosage.storage']);
-    
-    controllers.controller('DosesController', function ($scope, $location, localstorage) {
+
+    controllers.controller('DosesController', function ($scope, $location, $interval, localstorage) {
         var baby_name = localstorage.get('baby-name');
         var medicines = localstorage.get('medicines') || [];
         if (!(baby_name && medicines.length)) {
             $location.path('/');
             return;
         }
-        
+
         $scope.baby_name = baby_name;
         $scope.medicines = medicines;
-        
+
         $scope.new_dose = {};
-        
+
         $scope.set_new_dose_time_to_now = function () {
             $scope.new_dose.when = new Date();
         };
-        
+
         // Load doses and group by medicine, removing all out of date doses and
         // grouping my medicine
         var doses = localstorage.get('doses') || [];
@@ -33,11 +33,11 @@
         $scope.add_dose = function () {
             var dose = angular.copy($scope.new_dose);
             var dose_taken_time = Time.from_date(dose.when);
-            
+
             var today = new Date();
             var one_day_interval = new Interval(0, 0, 0, 0, 1);
             var yesterday = one_day_interval.substract_from_date(today);
-            
+
             var dose_taken_date;
             if (dose_taken_time < Time.now()) {
                 // Dose was taken earlier today
@@ -52,24 +52,33 @@
             localstorage.put('doses', doses);
             $scope.new_dose = {};
         };
-        
+
         $scope.delete_dose = function (index_to_delete) {
             doses.splice(index_to_delete, 1);
             localstorage.put('doses', doses);
         };
-        
+
         // Metrics
         $scope.metrics = get_medicines_metrics(medicines, doses);
-        
+
+        var updater = $interval(function () {
+            doses = purge_date_out_of_date_doses(doses);
+            $scope.doses = doses;
+        }, 10000);
+
+        $scope.$on('$destroy', function () {
+            $interval.cancel(updater);
+        });
+
     });
-    
+
     var Time = function (hours, minutes, seconds, milliseconds) {
         this.hours = hours;
         this.minutes = minutes;
         this.seconds = seconds;
         this.milliseconds = milliseconds;
     };
-    
+
     Time.from_date = function (date) {
         if (!(date instanceof Date)) {
             date = Date.parse(Date);
@@ -84,7 +93,7 @@
     Time.now = function () {
         return Time.from_date(new Date());
     };
-    
+
     Time.prototype = {
         to_milliseconds: function () {
             return (
@@ -116,7 +125,7 @@
             );
         }
     };
-    
+
     var Interval = function (milliseconds, seconds, minutes, hours, days) {
         this.milliseconds = milliseconds || 0;
         this.milliseconds += (seconds || 0) * 1000;
@@ -142,14 +151,14 @@
         valueOf: function () {
             return this.milliseconds;
         }
-        
+
     };
-    
+
     var purge_date_out_of_date_doses = function (doses) {
         var date_now = new Date();
         var one_day_interval = new Interval(0, 0, 0, 0, 1);
         var date_24_hours_ago = one_day_interval.substract_from_date(date_now);
-        
+
         // Ensure that the does are in order
         doses.sort(compare_doses);
         var doses_from_last_24_hours = [];
@@ -160,15 +169,15 @@
         });
         return doses_from_last_24_hours;
     };
-    
+
     var compare_doses = function (a, b) {
         return Date.parse(b.when) - Date.parse(a.when);
     };
-    
+
     var get_medicines_metrics = function (medicines, doses) {
         // Don't consider anything outside the last 24 hours
         doses = purge_date_out_of_date_doses(doses);
-        
+
         // Collect doses by medicine ID
         var doses_by_medicine_id = {}
         angular.forEach(doses, function (dose) {
@@ -179,7 +188,7 @@
                 doses_by_medicine_id[medicine_id] = [dose];
             }
         });
-        
+
         // For each medicine available, get metrics:
         var medicines_metrics = [];
         angular.forEach(medicines, function (medicine) {
@@ -188,10 +197,10 @@
                 get_medicine_metrics(medicine, medicine_doses)
             );
         });
-        
+
         return medicines_metrics;
     };
-    
+
     var get_medicine_metrics = function (medicine, doses) {
         // Can the medicine be taken based on elapsed time since the last dose?
         var last_dose = doses[0];
@@ -201,10 +210,10 @@
             var now = new Date();
             is_enough_time_elapsed = (medicine_interval.add_to_date(last_dose.when) < now);
         }
-        
+
         // Has the number of doses exceeded that in the last 24 hours
         var is_frequency_allowance_ok = doses.length < medicine.frequency;
-        
+
         return {
             medicine: medicine,
             is_enough_time_elapsed: is_enough_time_elapsed,
@@ -212,7 +221,7 @@
             is_next_dose_ok: is_enough_time_elapsed && is_frequency_allowance_ok
         };
     };
-    
+
     controllers.controller('MedicinesController', function ($scope, $location, localstorage) {
         var baby_name = localstorage.get('baby-name');
         if (!baby_name) {
@@ -220,10 +229,10 @@
             return;
         }
         $scope.baby_name = baby_name;
-        
+
         var creation_counter = localstorage.get('creation-counter') || 0;
         $scope.medicines = localstorage.get('medicines') || [];
-        
+
         // Addition of new medicines
         $scope.new_medicine = {};
         $scope.add_medicine = function () {
@@ -237,7 +246,7 @@
             creation_counter += 1;
             localstorage.put('creation-counter', creation_counter);
         };
-        
+
         // Removal of medicines
         $scope.delete_medicine = function (medicine_to_delete_id) {
             var updated_medicines = [];
@@ -251,9 +260,9 @@
         };
     });
     controllers.controller('TermsController', function ($scope) {
-        
+
     });
-    
+
     controllers.controller('GettingStartedController', function ($scope, localstorage) {
         $scope.baby_name = localstorage.get('baby-name');
         $scope.$watch('baby_name', function (new_name, old_name) {
@@ -262,11 +271,11 @@
             }
         });
     });
-    
-    
-    
+
+
+
     controllers.controller('MenuController', function ($scope) {
         $scope.is_menu_open = false;
     });
-    
+
 })(window.angular);
